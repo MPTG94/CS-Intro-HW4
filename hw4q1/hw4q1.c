@@ -25,6 +25,7 @@ void PrintEnterMatrix();
 void get_matrix_from_user(int* image, int n, int m);
 void PrintImageMessage();
 void PrintPrompt();
+void rotate(int* image, int n, int m, int* target, int d);
 void negative(int* image, int n, int m, int* target);
 void print_image(int* image, int n, int m);
 void PrintLeftRotation();
@@ -65,14 +66,14 @@ int main()
     switch(user_action)
     {
     case OP_ROTATE_LEFT:
-
+        rotate(image, n, m , target, 1);
         PrintLeftRotation();
-        print_image(target, n, m);
+        print_image(target, m, n);
         break;
     case OP_ROTATE_RIGHT:
-
+        rotate(image, n, m , target, 0);
         PrintRightRotation();
-        print_image(target, n, m);
+        print_image(target, m, n);
         break;
 
     case OP_AVERAGE:
@@ -111,10 +112,25 @@ void get_matrix_from_user(int* image, int n, int m)
 
 }*/
 
-/*void rotate(int* image, int n, int m, int* target, int d)
+void rotate(int* image, int n, int m, int* target, int d)
 {
+    if (d == 0)
+    {
+        // turn clockwise.
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                *(target+j+n-1-i) = *(image+i+j);
+            }
+        }
+    }
+    else if (d == 1)
+    {
+        // turn counterclockwise.
 
-}*/
+    }
+}
 
 /*
   Function to negate values of image matrix.
