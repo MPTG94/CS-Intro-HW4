@@ -66,12 +66,12 @@ int main()
     switch(user_action)
     {
     case OP_ROTATE_LEFT:
-        rotate(image, n, m , target, 1);
+        rotate(image, n, m, target, 1);
         PrintLeftRotation();
         print_image(target, m, n);
         break;
     case OP_ROTATE_RIGHT:
-        rotate(image, n, m , target, 0);
+        rotate(image, n, m, target, 0);
         PrintRightRotation();
         print_image(target, m, n);
         break;
@@ -117,13 +117,20 @@ void rotate(int* image, int n, int m, int* target, int d)
     if (d == 0)
     {
         // turn clockwise.
-        for (int i = 0; i < n; i++)
+        int count = 0;
+        for (int column = m - 1; m >= 0; column--)
         {
-            for (int j = 0; j < m; j++)
+            for (int row = 0; row < n; row++)
             {
-                *(target+j+n-1-i) = *(image+i+j);
+                    printf("row in original is: %d\n", row);
+            printf("row in original is: %d\n", column);
+            printf("row in original is: %d\n", count);
+                *(target+row+column) = *(image+count);
+                count++;
             }
         }
+        //*(target+row+column) = *(image+count);
+
     }
     else if (d == 1)
     {
