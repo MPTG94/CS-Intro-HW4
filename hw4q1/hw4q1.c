@@ -112,30 +112,40 @@ void get_matrix_from_user(int* image, int n, int m)
 
 }*/
 
+/*
+  Function to rotate the image matrix 90 degrees in the direction
+  specified by the user.
+*/
 void rotate(int* image, int n, int m, int* target, int d)
 {
     if (d == 0)
     {
         // turn clockwise.
         int count = 0;
-        for (int column = m - 1; m >= 0; column--)
+        for (int column = n - 1; column >= 0; column--)
         {
-            for (int row = 0; row < n; row++)
+            for (int row = 0; row < m; row++)
             {
-                    printf("row in original is: %d\n", row);
-            printf("row in original is: %d\n", column);
-            printf("row in original is: %d\n", count);
-                *(target+row+column) = *(image+count);
+                *(target+row*n+column) = *(image+count);
                 count++;
+                print_image(target, m, n);
             }
         }
-        //*(target+row+column) = *(image+count);
-
     }
     else if (d == 1)
     {
-        // turn counterclockwise.
+        // turn counter-clockwise.
+        int count = 0;
+        for (int column = 0; column < n; column++)
 
+        {
+            for (int row = m - 1; row >= 0; row--)
+            {
+                *(target+row*n+column) = *(image+count);
+                count++;
+                print_image(target, m, n);
+            }
+        }
     }
 }
 
