@@ -1,0 +1,4 @@
+What is the length of your word?
+Enter your word:
+Enter your secret char:
+The transformed word is: Lodovede

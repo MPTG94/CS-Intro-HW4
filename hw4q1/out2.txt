@@ -1,0 +1,15 @@
+Enter the number of rows in your image matrix:
+Enter the number of columns in your image matrix:
+Enter your matrix:
+Your original image is:
+17	22	123	255
+8	32	134	251
+8	44	101	248
+4	40	190	223
+0	211	223	109
+What you would like to do with your photo (L,R,V,N)?
+The image after left rotation:
+255	251	248	223	109
+123	134	101	190	223
+22	32	44	40	211
+17	8	8	4	0
