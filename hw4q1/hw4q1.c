@@ -111,32 +111,84 @@ void get_matrix_from_user(int* image, int n, int m)
 void average(int* image, int n, int m, int* target)
 {
     int count = 0;
-    int sum = 0;
-    while (count < n*m)
+    for (int i = 0; i < n; i++)
     {
-        if (count == 0)
+        for (int j = 0; j < m; j++)
         {
-            // average of first cell.
-            sum += *(image+count);
-            sum += *(image+count + 1);
-            sum += *(image+count + m);
-            sum += *(image+count + m + 1);
-            printf("average is %d\n", sum/4);
-            *(target + count) = sum/4;
+            int cells_count = 1;
+            int sum = *(image + i + j);
+            if(adjacent_cell(image, n, m, i - 1, j - 1))
+            {
+                sum += *(image + i - 1 + j - 1);
+                cells_count++;
+            }
+            if(adjacent_cell(image, n, m, i - 1, j))
+            {
+                sum += *(image + i - 1 + j);
+                cells_count++;
+            }
+            if(adjacent_cell(image, n, m, i - 1, j + 1))
+            {
+                sum += *(image + i - 1 + j + 1);
+                cells_count++;
+            }
+            if(adjacent_cell(image, n, m, i, j - 1))
+            {
+                sum += *(image + i + j - 1);
+                cells_count++;
+            }
+            if(adjacent_cell(image, n, m, i, j + 1))
+            {
+                sum += *(image + i + j + 1);
+                cells_count++;
+            }
+            if(adjacent_cell(image, n, m, i + 1, j - 1))
+            {
+                sum += *(image + i + 1 + j - 1);
+                cells_count++;
+            }
+            if(adjacent_cell(image, n, m, i + 1, j))
+            {
+                sum += *(image + i + 1 + j);
+                cells_count++;
+            }
+            if(adjacent_cell(image, n, m, i + 1, j + 1))
+            {
+                sum += *(image + i + 1 + j + 1);
+                cells_count++;
+            }
+            *(target + i +j) = sum/cells_count;
         }
-        else if (count == n*m - 1)
-        {
-            // average of last cell.
-            sum += *(image+count);
-            sum += *(image+count -1);
-            sum += *(image+count - m);
-            sum += *(image+count - m - 1);
-            printf("average is %d\n", sum/4);
-            *(target + count) = sum/4;
-        }
-        count++;
     }
+
 }
+
+/*void get_adjacent_cells_average(int* image, int n, int m, int* target, int count)
+{
+    int sum = *(image + count);
+    int cells = 1;
+    if (count - m > 0)
+    {
+        sum += *(image + count -m);
+        cells++;
+    }
+    if (count - m - 1> 0)
+    {
+        sum += *(image + count - m - 1);
+        cells++;
+    }
+    if (count + m < m*n)
+    {
+        sum += *(image + count + m);
+        cells++;
+    }
+    if (count + m - 1 < m*n)
+    {
+        sum += *(image + count + m - 1);
+        cells++;
+    }
+    //if (count - 1 > 0 && (count - 1) % )
+}*/
 
 /*
   Function to rotate the image matrix 90 degrees in the direction
@@ -154,7 +206,6 @@ void rotate(int* image, int n, int m, int* target, int d)
             {
                 *(target + row * n + column) = *(image + count);
                 count++;
-                print_image(target, m, n);
             }
         }
     }
@@ -169,7 +220,6 @@ void rotate(int* image, int n, int m, int* target, int d)
             {
                 *(target + row * n + column) = *(image + count);
                 count++;
-                print_image(target, m, n);
             }
         }
     }
