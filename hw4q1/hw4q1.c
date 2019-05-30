@@ -6,8 +6,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-
-
 /*=========================================================================
   Constants and definitions:
 ==========================================================================*/
@@ -18,21 +16,25 @@
 #define OP_ROTATE_RIGHT 'R'
 #define OP_AVERAGE 'V'
 #define OP_NEGATE 'N'
+#define COLOR_MAX_VALUE 255
 
 void PrintRowMessage();
 void PrintColumnMessage();
 void PrintEnterMatrix();
-void get_matrix_from_user(int* image, int n, int m);
+int **create_matrix(int row, int column);
+int **get_matrix_from_user(int **image, int n, int m);
 void PrintImageMessage();
 void PrintPrompt();
-void average(int* image, int n, int m, int* target);
-void rotate(int* image, int n, int m, int* target, int d);
-void negative(int* image, int n, int m, int* target);
-void print_image(int* image, int n, int m);
+void average(int **image, int n, int m, int **target);
+int get_adjacent_cells_average(int **image, int n, int m, int row, int column);
+void rotate(int **image, int n, int m, int **target, int d);
+void negative(int **image, int n, int m, int **target);
+void print_image(int **image, int n, int m);
 void PrintLeftRotation();
 void PrintRightRotation();
 void PrintAveraging();
 void PrintNegating();
+void free_mem(int **image, int n);
 /*-------------------------------------------------------------------------
   This program takes as input a two dimensional matrix representing an
   image.
@@ -42,19 +44,14 @@ void PrintNegating();
 int main()
 {
     int n = 0, m = 0;
-    int *image = NULL, *target = NULL;
+    int **image = NULL, **target = NULL;
     char user_action;
     PrintRowMessage();
     scanf("%d", &n);
     PrintColumnMessage();
     scanf("%d", &m);
-    image = (int*)malloc(n * m * sizeof(int));
+    image = create_matrix(n, m);
     if (image == NULL)
-    {
-        return 0;
-    }
-    target = (int*)malloc(n * m * sizeof(int));
-    if (target== NULL)
     {
         return 0;
     }
@@ -64,192 +61,202 @@ int main()
     print_image(image, n, m);
     PrintPrompt();
     scanf(" %c", &user_action);
-    switch(user_action)
+    switch (user_action)
     {
     case OP_ROTATE_LEFT:
+        target = create_matrix(m, n);
+        if (target == NULL)
+        {
+            return 0;
+        }
         rotate(image, n, m, target, 1);
-        PrintLeftRotation();
-        print_image(target, m, n);
+        free_mem(image, n);
+        free_mem(target, m);
         break;
     case OP_ROTATE_RIGHT:
+        target = create_matrix(m, n);
+        if (target == NULL)
+        {
+            return 0;
+        }
         rotate(image, n, m, target, 0);
-        PrintRightRotation();
-        print_image(target, m, n);
+        free_mem(image, n);
+        free_mem(target, m);
         break;
 
     case OP_AVERAGE:
+        target = create_matrix(n, m);
+        if (target == NULL)
+        {
+            return 0;
+        }
         average(image, n, m, target);
-        PrintAveraging();
-        print_image(target, n, m);
+        free_mem(image, n);
+        free_mem(target, n);
         break;
     case OP_NEGATE:
+        target = create_matrix(n, m);
+        if (target == NULL)
+        {
+            return 0;
+        }
         negative(image, n, m, target);
-        PrintNegating();
-        print_image(target, n, m);
+        free_mem(image, n);
+        free_mem(target, n);
         break;
+    }
+    return 0;
+}
 
+/*
+  Function to free memory used by image matrix.
+*/
+void free_mem(int **image, int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        free(image[i]);
     }
     free(image);
-    free(target);
-    return 0;
+}
+
+/*
+  Function to create a two dimensional dynamic matrix.
+*/
+int **create_matrix(int row, int column)
+{
+    int **image = (int **)malloc(row * sizeof(int *));
+    for (int i = 0; i < row; i++)
+    {
+        image[i] = malloc(column * sizeof(int));
+    }
+    return image;
 }
 
 /*
   Function to get values of image matrix from the user.
 */
-void get_matrix_from_user(int* image, int n, int m)
+int **get_matrix_from_user(int **image, int n, int m)
 {
-    int count = 0, num = 0;
-    while (count < n*m)
-    {
-        scanf("%d", &num);
-        *(image+count) = num;
-        count++;
-    }
-}
-
-void average(int* image, int n, int m, int* target)
-{
-    int count = 0;
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
         {
-            int cells_count = 1;
-            int sum = *(image + i + j);
-            if(adjacent_cell(image, n, m, i - 1, j - 1))
-            {
-                sum += *(image + i - 1 + j - 1);
-                cells_count++;
-            }
-            if(adjacent_cell(image, n, m, i - 1, j))
-            {
-                sum += *(image + i - 1 + j);
-                cells_count++;
-            }
-            if(adjacent_cell(image, n, m, i - 1, j + 1))
-            {
-                sum += *(image + i - 1 + j + 1);
-                cells_count++;
-            }
-            if(adjacent_cell(image, n, m, i, j - 1))
-            {
-                sum += *(image + i + j - 1);
-                cells_count++;
-            }
-            if(adjacent_cell(image, n, m, i, j + 1))
-            {
-                sum += *(image + i + j + 1);
-                cells_count++;
-            }
-            if(adjacent_cell(image, n, m, i + 1, j - 1))
-            {
-                sum += *(image + i + 1 + j - 1);
-                cells_count++;
-            }
-            if(adjacent_cell(image, n, m, i + 1, j))
-            {
-                sum += *(image + i + 1 + j);
-                cells_count++;
-            }
-            if(adjacent_cell(image, n, m, i + 1, j + 1))
-            {
-                sum += *(image + i + 1 + j + 1);
-                cells_count++;
-            }
-            *(target + i +j) = sum/cells_count;
+            scanf("%d", &(image[i][j]));
         }
     }
-
+    return image;
 }
 
-/*void get_adjacent_cells_average(int* image, int n, int m, int* target, int count)
+/*
+  Function to calculate the average of all cells and their
+  adjacent cells.
+*/
+void average(int **image, int n, int m, int **target)
 {
-    int sum = *(image + count);
-    int cells = 1;
-    if (count - m > 0)
+    for (int i = 0; i < n; i++)
     {
-        sum += *(image + count -m);
-        cells++;
+        for (int j = 0; j < m; j++)
+        {
+            target[i][j] = get_adjacent_cells_average(image, n, m, i, j);
+        }
     }
-    if (count - m - 1> 0)
+    PrintAveraging();
+    print_image(target, n, m);
+}
+
+/*
+  Function to check which cells are adjacent to the input cell in the matrix
+  and calculate the average of those cells.
+*/
+int get_adjacent_cells_average(int **image, int n, int m, int row, int column)
+{
+    int sum = 0;
+    int cells_count = 0;
+    for (int i = -1; i < 2; i++)
     {
-        sum += *(image + count - m - 1);
-        cells++;
+        if (row + i < 0 || row + i >= n)
+        {
+            continue;
+        }
+        for (int j = -1; j < 2; j++)
+        {
+            if (column + j < 0 || column + j >= m)
+            {
+                continue;
+            }
+            sum += image[row + i][column + j];
+            cells_count++;
+        }
     }
-    if (count + m < m*n)
-    {
-        sum += *(image + count + m);
-        cells++;
-    }
-    if (count + m - 1 < m*n)
-    {
-        sum += *(image + count + m - 1);
-        cells++;
-    }
-    //if (count - 1 > 0 && (count - 1) % )
-}*/
+    return sum / cells_count;
+}
 
 /*
   Function to rotate the image matrix 90 degrees in the direction
   specified by the user.
 */
-void rotate(int* image, int n, int m, int* target, int d)
+void rotate(int **image, int n, int m, int **target, int d)
 {
-    if (d == 0)
+    if (d == ROTATE_RIGHT)
     {
         // turn clockwise.
-        int count = 0;
-        for (int column = n - 1; column >= 0; column--)
+        for (int i = 0; i < n; i++)
         {
-            for (int row = 0; row < m; row++)
+            for (int j = 0; j < m; j++)
             {
-                *(target + row * n + column) = *(image + count);
-                count++;
+                target[j][n - i - 1] = image[i][j];
             }
         }
+        PrintRightRotation();
+        print_image(target, m, n);
     }
-    else if (d == 1)
+    else if (d == ROTATE_LEFT)
     {
         // turn counter-clockwise.
-        int count = 0;
-        for (int column = 0; column < n; column++)
-
+        for (int i = 0; i < n; i++)
         {
-            for (int row = m - 1; row >= 0; row--)
+            for (int j = 0; j < m; j++)
             {
-                *(target + row * n + column) = *(image + count);
-                count++;
+                target[m - j - 1][i] = image[i][j];
             }
         }
+        PrintLeftRotation();
+        print_image(target, m, n);
     }
 }
 
 /*
   Function to negate values of image matrix.
 */
-void negative(int* image, int n, int m, int* target)
+void negative(int **image, int n, int m, int **target)
 {
-    int count = 0;
-    while (count < n*m)
+    for (int i = 0; i < n; i++)
     {
-        *(target+count) = 255-*(image+count);
-        count++;
+        for (int j = 0; j < m; j++)
+        {
+            target[i][j] = COLOR_MAX_VALUE - image[i][j];
+        }
     }
+    PrintNegating();
+    print_image(target, n, m);
 }
 
-void print_image(int* image, int n, int m)
+void print_image(int **image, int n, int m)
 {
-    int i,j;
-    for(j=0; j < n; j++)
+    int i, j;
+    for (i = 0; i < n; i++)
     {
-        for (i =0; i < m; i++)
+        for (j = 0; j < m; j++)
         {
-            if (i != m-1)
-                printf("%d\t", *( (image+j*m) + i));//image[j][i]
+            if (j != m - 1)
+            {
+                printf("%d\t", image[i][j]);
+            }
             else
-                printf("%d", *( (image+j*m) + i));
-
+            {
+                printf("%d", image[i][j]);
+            }
         }
         printf("\n");
     }

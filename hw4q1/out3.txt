@@ -1,0 +1,16 @@
+Enter the number of rows in your image matrix:
+Enter the number of columns in your image matrix:
+Enter your matrix:
+Your original image is:
+17	22	123	255
+8	32	134	251
+8	44	101	248
+4	40	190	223
+0	211	223	109
+What you would like to do with your photo (L,R,V,N)?
+The image after averaging:
+19	56	136	190
+21	54	134	185
+22	62	140	191
+51	91	154	182
+63	111	166	186
