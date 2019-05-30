@@ -25,6 +25,7 @@ void PrintEnterMatrix();
 void get_matrix_from_user(int* image, int n, int m);
 void PrintImageMessage();
 void PrintPrompt();
+void average(int* image, int n, int m, int* target);
 void rotate(int* image, int n, int m, int* target, int d);
 void negative(int* image, int n, int m, int* target);
 void print_image(int* image, int n, int m);
@@ -77,7 +78,7 @@ int main()
         break;
 
     case OP_AVERAGE:
-
+        average(image, n, m, target);
         PrintAveraging();
         print_image(target, n, m);
         break;
@@ -107,10 +108,35 @@ void get_matrix_from_user(int* image, int n, int m)
     }
 }
 
-/*void average(int* image, int n, int m, int* target)
+void average(int* image, int n, int m, int* target)
 {
-
-}*/
+    int count = 0;
+    int sum = 0;
+    while (count < n*m)
+    {
+        if (count == 0)
+        {
+            // average of first cell.
+            sum += *(image+count);
+            sum += *(image+count + 1);
+            sum += *(image+count + m);
+            sum += *(image+count + m + 1);
+            printf("average is %d\n", sum/4);
+            *(target + count) = sum/4;
+        }
+        else if (count == n*m - 1)
+        {
+            // average of last cell.
+            sum += *(image+count);
+            sum += *(image+count -1);
+            sum += *(image+count - m);
+            sum += *(image+count - m - 1);
+            printf("average is %d\n", sum/4);
+            *(target + count) = sum/4;
+        }
+        count++;
+    }
+}
 
 /*
   Function to rotate the image matrix 90 degrees in the direction
@@ -126,7 +152,7 @@ void rotate(int* image, int n, int m, int* target, int d)
         {
             for (int row = 0; row < m; row++)
             {
-                *(target+row*n+column) = *(image+count);
+                *(target + row * n + column) = *(image + count);
                 count++;
                 print_image(target, m, n);
             }
@@ -141,7 +167,7 @@ void rotate(int* image, int n, int m, int* target, int d)
         {
             for (int row = m - 1; row >= 0; row--)
             {
-                *(target+row*n+column) = *(image+count);
+                *(target + row * n + column) = *(image + count);
                 count++;
                 print_image(target, m, n);
             }
