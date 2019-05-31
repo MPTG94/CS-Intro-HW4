@@ -11,7 +11,6 @@
   Constants and definitions:
 ==========================================================================*/
 
-/* put your #defines and typedefs here*/
 #define DICTIONARY_SIZE 6
 #define TRANSFORM_INDEX_PUSH_1 1
 #define TRANSFORM_INDEX_PUSH_2 2
@@ -48,19 +47,38 @@ int main()
   int source_word_length = 0;
   int target_word_length = 0;
   char secret;
+
   PrintWelcomeMessage();
   scanf("%d", &source_word_length);
+
   char *source_word = malloc(source_word_length * sizeof(char));
+  if (source_word == NULL)
+  {
+      PrintMallocError();
+      return 0;
+  }
+
   PrintWordMessage();
   scanf("%s", source_word);
+
   target_word_length = calc_target_word_len(source_word);
   char *target_word = malloc(target_word_length * sizeof(char));
+  if (target_word == NULL)
+  {
+      PrintMallocError();
+      free(source_word);
+      return 0;
+  }
+
   PrintCharMessage();
   scanf(" %c", &secret);
+
   transform(source_word, secret, target_word, source_strings, target_strings);
   PrintTransformedWord(target_word);
+
   free(source_word);
   free(target_word);
+
   return 0;
 }
 
@@ -106,7 +124,7 @@ void transform(char *str, char c, char *str_trns, char *source_strings[], char *
 int calc_target_word_len(char *word)
 {
   int orig_len = (int)strlen(word);
-  int count = (int)strlen(word);
+  int count = orig_len;
   for (int i = 0; i < orig_len; i++)
   {
     if (is_vowel_letter(word[i]))
@@ -126,37 +144,26 @@ bool is_vowel_letter(char c)
   {
   case A_UPPER:
     return true;
-    break;
   case E_UPPER:
     return true;
-    break;
   case I_UPPER:
     return true;
-    break;
   case O_UPPER:
     return true;
-    break;
   case U_UPPER:
     return true;
-    break;
   case A_LOWER:
     return true;
-    break;
   case E_LOWER:
     return true;
-    break;
   case I_LOWER:
     return true;
-    break;
   case O_LOWER:
     return true;
-    break;
   case U_LOWER:
     return true;
-    break;
   default:
     return false;
-    break;
   }
 }
 

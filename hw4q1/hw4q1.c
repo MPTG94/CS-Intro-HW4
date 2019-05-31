@@ -35,6 +35,7 @@ void PrintRightRotation();
 void PrintAveraging();
 void PrintNegating();
 void free_mem(int **image, int n);
+
 /*-------------------------------------------------------------------------
   This program takes as input a two dimensional matrix representing an
   image.
@@ -46,6 +47,7 @@ int main()
     int n = 0, m = 0;
     int **image = NULL, **target = NULL;
     char user_action;
+
     PrintRowMessage();
     scanf("%d", &n);
     PrintColumnMessage();
@@ -67,20 +69,20 @@ int main()
         target = create_matrix(m, n);
         if (target == NULL)
         {
+            free_mem(image, n);
             return 0;
         }
         rotate(image, n, m, target, 1);
-        free_mem(image, n);
         free_mem(target, m);
         break;
     case OP_ROTATE_RIGHT:
         target = create_matrix(m, n);
         if (target == NULL)
         {
+            free_mem(image, n);
             return 0;
         }
         rotate(image, n, m, target, 0);
-        free_mem(image, n);
         free_mem(target, m);
         break;
 
@@ -88,23 +90,26 @@ int main()
         target = create_matrix(n, m);
         if (target == NULL)
         {
+            free_mem(image, n);
             return 0;
         }
         average(image, n, m, target);
-        free_mem(image, n);
         free_mem(target, n);
         break;
     case OP_NEGATE:
         target = create_matrix(n, m);
         if (target == NULL)
         {
+            free_mem(image, n);
             return 0;
         }
         negative(image, n, m, target);
-        free_mem(image, n);
         free_mem(target, n);
         break;
     }
+
+    free_mem(image, n);
+
     return 0;
 }
 
@@ -126,9 +131,23 @@ void free_mem(int **image, int n)
 int **create_matrix(int row, int column)
 {
     int **image = (int **)malloc(row * sizeof(int *));
+    if (image == NULL)
+    {
+        return image;
+    }
     for (int i = 0; i < row; i++)
     {
         image[i] = malloc(column * sizeof(int));
+        if (image[i] == NULL)
+        {
+            // There was an issue allocating the sub arrays, freeing already allocated memory.
+            for (i -= 1; i >= 0; i--);
+            {
+                free(image[i]);
+            }
+            free(image);
+            return image;
+        }
     }
     return image;
 }
