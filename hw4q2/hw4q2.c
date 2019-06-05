@@ -34,6 +34,7 @@ int calc_target_word_len(char *word);
 bool is_vowel_letter(char c);
 void transform(char *str, char c, char *str_trns, char *source_strings[], char *target_strings[]);
 void PrintTransformedWord(char *word);
+int calc_word(char *str);
 
 /*-------------------------------------------------------------------------
   This program takes as input the length of a word, a word and a secret
@@ -123,7 +124,7 @@ void transform(char *str, char c, char *str_trns, char *source_strings[], char *
 */
 int calc_target_word_len(char *word)
 {
-  int orig_len = (int)strlen(word);
+  int orig_len = (int)calc_word(word);
   int count = orig_len;
   for (int i = 0; i < orig_len; i++)
   {
@@ -165,6 +166,16 @@ bool is_vowel_letter(char c)
   default:
     return false;
   }
+}
+
+int calc_word(char *str)
+{
+    int i = 0;
+    while(str[i])
+    {
+        i++;
+    }
+    return i;
 }
 
 void PrintMallocError()
